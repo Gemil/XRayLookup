@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     25.02.2013 19:30:45                                                        
+
+     project    
+     description
+                   
+     Gemil                                                                
+     ====================================================================== -->
+<project name="XRayLookup.makejar" default="makejar">
+    <description>
+            Automatic Jar Builder File
+    </description>
+
+    <!-- ================================= 
+          target: default              
+         ================================= -->
+    <target name="makejar" description="Make a Jar File">
+        <jar destfile="C:/Users/Gerrit Paepcke/Dropbox/Öffentlich/bukkit/XRayLookup.jar">
+        	<fileset dir="bin" />
+        </jar>
+    </target>
+
+</project>

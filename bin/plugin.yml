@@ -1,0 +1,22 @@
+name: XRayLookup
+version: 0.0.1
+author: Gemil
+website: http://cubecontinuum.de
+main: de.cubecontinuum.XRayLookup.XRayLookup
+softdepend: [CoreProtect]
+permissions:
+  xraylookup.*:
+    default: op
+    children:
+      xraylookup.look: true
+      xraylookup.recieve: true
+  xraylookup.look:
+    default: false
+  xraylookup.recieve:
+    default: false
+commands:
+  xraylookup:
+    aliases: [xray, xl]
+    permission: xraylookup.look
+    description: Show the Player Mining Stats
+    usage: "Please use /xl [player]"
