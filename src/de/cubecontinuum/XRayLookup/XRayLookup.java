@@ -1,5 +1,6 @@
 package de.cubecontinuum.XRayLookup;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import de.cubecontinuum.XRayLookup.ExtensionHandlers.BasicExtension;
 import de.cubecontinuum.XRayLookup.ExtensionHandlers.CoreProtectExtension;
 import de.cubecontinuum.XRayLookup.ExtensionHandlers.LogBlockExtension;
+import de.cubecontinuum.XRayLookup.ExtensionHandlers.Metrics;
 
 
 public class XRayLookup extends JavaPlugin {
@@ -32,6 +34,12 @@ public class XRayLookup extends JavaPlugin {
 	public void onEnable(){ 
 		this.loadConfig();
 		this.loadDependencies();
+		try {
+		    Metrics metrics = new Metrics(this);
+		    metrics.start();
+		} catch (IOException e) {
+			this.log("Couldn't connect to http://mcstats.org");
+		}
 		
 		if (this.lookup.isEnabled()) {
 			Bukkit.getServer().getPluginManager().registerEvents(new XRayListener(), this);
