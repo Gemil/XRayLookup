@@ -13,9 +13,9 @@ public class XRayConfig {
 	private double rate_diamond = 3.0;
 	private double rate_emerald = 5.0;
 	private double rate_redstone = 15.0;
-	private double rate_coal = 20.0;
+	private double rate_coal = 25.0;
 	private double rate_iron = 15.0;
-	private double rate_quartz = 1000.0;
+	private double rate_quartz = 100.0;
 	private double rate_gold = 5.0;
 	private double rate_lapis = 15.0;
 	private int lookuptime = 259200; // 72h

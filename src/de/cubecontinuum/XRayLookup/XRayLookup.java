@@ -3,7 +3,14 @@ package de.cubecontinuum.XRayLookup;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -17,6 +24,7 @@ import de.cubecontinuum.XRayLookup.ExtensionHandlers.BasicExtension;
 import de.cubecontinuum.XRayLookup.ExtensionHandlers.CoreProtectExtension;
 import de.cubecontinuum.XRayLookup.ExtensionHandlers.LogBlockExtension;
 import de.cubecontinuum.XRayLookup.ExtensionHandlers.Metrics;
+import de.cubecontinuum.XRayLookup.ExtensionHandlers.PrismExtension;
 
 
 public class XRayLookup extends JavaPlugin {
@@ -46,25 +54,70 @@ public class XRayLookup extends JavaPlugin {
 			this.log(this.getName()+" loaded successfully");
 		}
 		else {
-			this.log("Couldn't find CoreProtect or LogBlock");
+			this.log("Couldn't find CoreProtect, LogBlock or Prism");
 		}
 	}
 	public void onDisable(){ 
 		this.log(this.getName()+" has been disabled");
 	}
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){
+		String target = null;
+		if (args.length == 0 && sender instanceof Player) {
+			target = sender.getName();
+		}
+		else {
+			target = args[0];
+		}
+		
 		if(cmd.getName().equalsIgnoreCase("xraylookup")){
-			String target;
-			if (args.length == 0 && sender instanceof Player) {
-				target = sender.getName();
-			}
-			else {
-				target = args[0];
-			}
 			OreLookup ores = lookup.lookup(target, this.config.getLookuptime(), this.searchblocks);
 			this.sendData((Player)sender, ores);
 			return true;
-		} 
+		}
+		else if (cmd.getName().equalsIgnoreCase("xraylookupall")) {
+			Map<String, Double> top = new HashMap<String, Double>();
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				OreLookup tmp = lookup.lookup(player.getName(), this.config.getLookuptime(), Arrays.asList(1,56)); 
+				top.put(player.getName(), tmp.getDiamondRate());
+			}
+
+			// Sortieren der Werte
+			Set<String> keys = top.keySet();
+			TreeMap<Double, Set<String>> treeMap = new TreeMap<Double, Set<String>>();
+			for (String key : keys) {
+	            double value = top.get(key);
+	            Set<String> values;
+	            if(treeMap.containsKey(value)){
+	                values = treeMap.get(value);
+	                values.add(key);
+	            } 
+	            else {
+	                values = new HashSet<String>();
+	                values.add(key);
+	            }
+	            
+	            treeMap.put(value, values);
+	        }
+			
+			// Ausgabe der Werte
+			Set<Double> treeValues = treeMap.keySet();
+			List<Double> reverseKeys = new LinkedList<Double>(treeValues);
+	        Collections.reverse(reverseKeys);
+	        
+	        sender.sendMessage(ChatColor.GOLD+"### Diamond Rates from all "+ChatColor.BLUE+"Online Players"+ChatColor.GOLD+" ###");
+	        DecimalFormat f = new DecimalFormat("#0.000");
+	        int i = 1;
+	        for (Double doub : reverseKeys) {
+        		Set<String> values = treeMap.get(doub);
+        		String temp = "";
+	            for (String string : values) {
+	            	temp = temp+" " + string;
+	            }
+	            sender.sendMessage(ChatColor.DARK_AQUA+"TOP "+i+":"+temp+ChatColor.DARK_GRAY+" (Rate: "+f.format(doub)+"%)");
+	            i++;
+	        }
+	        return true;
+		}
 		return false; 
 	}
 	public void sendData(Player player, OreLookup ores) {
@@ -86,12 +139,13 @@ public class XRayLookup extends JavaPlugin {
 		this.config = new XRayConfig();
 	}
 	private void loadDependencies() {
-
 		this.lookup = new CoreProtectExtension();
 		if (!this.lookup.isEnabled()) {
 			this.lookup = new LogBlockExtension();
 		}
-		
+		if (!this.lookup.isEnabled()) {
+			this.lookup = new PrismExtension();
+		}
 	}
 	public void log(String message) {
 		this.log.info("["+this.getName()+"] "+message);

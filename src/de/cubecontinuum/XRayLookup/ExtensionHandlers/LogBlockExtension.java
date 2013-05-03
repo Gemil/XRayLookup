@@ -28,9 +28,6 @@ public class LogBlockExtension extends BasicExtension{
 			this.loaded = true;
 			XRayLookup.xraylookup.log("LogBlock was loaded");
 		}
-		else {
-			XRayLookup.xraylookup.log("LogBlock was not found");
-		}
 	}
 
 	@Override

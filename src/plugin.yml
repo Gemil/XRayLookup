@@ -1,16 +1,19 @@
 name: XRayLookup
-version: 0.0.1
+version: 0.1.0
 author: Gemil
 website: http://cubecontinuum.de
 main: de.cubecontinuum.XRayLookup.XRayLookup
-softdepend: [CoreProtect]
+softdepend: [CoreProtect,LogBlock,Prism]
 permissions:
   xraylookup.*:
     default: op
     children:
       xraylookup.look: true
       xraylookup.recieve: true
+      xraylookup.lookall: true
   xraylookup.look:
+    default: false
+  xraylookup.lookall:
     default: false
   xraylookup.recieve:
     default: false
@@ -20,3 +23,8 @@ commands:
     permission: xraylookup.look
     description: Show the Player Mining Stats
     usage: "Please use /xl [player]"
+  xraylookupall:
+    aliases: [xrayall, xlall, xla]
+    permission: xraylookup.lookall
+    description: Show the Diamond Mining Rates from All Online Players
+    usage: "Please use /xla"

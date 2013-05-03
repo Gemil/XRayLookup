@@ -18,35 +18,38 @@ public class OreLookup {
 		this.player = p;
 	}
 	public void add(int mcid) {
+		this.add(mcid,1);
+	}
+	public void add(int mcid,int count) {
 		if (mcid == 1) {
-			this.stone++;
+			this.stone = this.stone + count;
 		}
 		else if (mcid == 14) {
-			this.gold++;
+			this.gold = this.gold + count;
 		}
 		else if (mcid == 15) {
-			this.iron++;
+			this.iron = this.iron + count;
 		}
 		else if (mcid == 16) {
-			this.coal++;
+			this.coal = this.coal + count;
 		}
 		else if (mcid == 21) {
-			this.lapis++;
+			this.lapis = this.lapis + count;
 		}
 		else if (mcid == 56) {
-			this.diamond++;
+			this.diamond = this.diamond + count;
 		}
 		else if (mcid == 73 || mcid == 74) {
-			this.redstone++;
+			this.redstone = this.redstone + count;
 		}
 		else if (mcid == 87) {
-			this.netherrack++;
+			this.netherrack = this.netherrack + count;
 		}
 		else if (mcid == 129) {
-			this.emerald++;
+			this.emerald = this.emerald + count;
 		}
 		else if (mcid == 153) {
-			this.quartz++;
+			this.quartz = this.quartz + count;
 		}
 		else {
 			XRayLookup.xraylookup.log("Unknown id: "+mcid);
@@ -66,7 +69,8 @@ public class OreLookup {
 			return 0; 
 		}
 		else {
-			return (double) diamond/stone*100;
+			double tmp = (double) diamond/stone*100;
+			return (tmp > 100)?100.0:tmp;
 		}
 	}
 	public void setDiamond(int diamond) {
@@ -80,7 +84,8 @@ public class OreLookup {
 			return 0; 
 		}
 		else {
-			return (double) emerald/stone*100;
+			double tmp = (double) emerald/stone*100;
+			return (tmp > 100)?100.0:tmp;
 		}
 	}
 	public void setEmerald(int emerald) {
@@ -94,7 +99,8 @@ public class OreLookup {
 			return 0; 
 		}
 		else {
-			return (double) redstone/stone*100;
+			double tmp = (double) redstone/stone*100;
+			return (tmp > 100)?100.0:tmp;
 		}
 	}
 	public void setRedstone(int redstone) {
@@ -108,7 +114,8 @@ public class OreLookup {
 			return 0; 
 		}
 		else {
-			return (double) coal/stone*100;
+			double tmp = (double) coal/stone*100;
+			return (tmp > 100)?100.0:tmp;
 		}
 	}
 	public void setCoal(int coal) {
@@ -122,7 +129,8 @@ public class OreLookup {
 			return 0; 
 		}
 		else {
-			return (double) iron/stone*100;
+			double tmp = (double) iron/stone*100;
+			return (tmp > 100)?100.0:tmp;
 		}
 	}
 	public void setIron(int iron) {
@@ -136,7 +144,8 @@ public class OreLookup {
 			return 0; 
 		}
 		else {
-			return (double) quartz/netherrack*100;
+			double tmp = (double) quartz/netherrack*100;
+			return (tmp > 100)?100.0:tmp;
 		}
 	}
 	public void setQuartz(int quartz) {
@@ -150,7 +159,8 @@ public class OreLookup {
 			return 0; 
 		}
 		else {
-			return (double) gold/stone*100;
+			double tmp = (double) gold/stone*100;
+			return (tmp > 100)?100.0:tmp;
 		}
 	}
 	public void setGold(int gold) {
@@ -164,7 +174,8 @@ public class OreLookup {
 			return 0; 
 		}
 		else {
-			return (double) lapis/stone*100;
+			double tmp = (double) lapis/stone*100;
+			return (tmp > 100)?100.0:tmp;
 		}
 	}
 	public void setLapis(int lapis) {

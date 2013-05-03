@@ -33,10 +33,7 @@ public class CoreProtectExtension extends BasicExtension{
 				XRayLookup.xraylookup.log("Coreprotect was loaded");
 				this.loaded = true;
 			}
-		}
-		else {
-			XRayLookup.xraylookup.log("Coreprotect was not found");
-		}		
+		}	
 	}
 
 	@Override
