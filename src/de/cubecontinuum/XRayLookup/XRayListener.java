@@ -8,7 +8,15 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import de.cubecontinuum.XRayLookup.ExtensionHandlers.PrismExtension;
+
 public class XRayListener implements Listener {
+	
+	private XRayLookup plugin;
+	
+	public XRayListener(XRayLookup plugin) {
+		this.plugin = plugin;
+	}
 	@EventHandler
 	public void onOreBreak(PlayerJoinEvent e) {
 		this.lookup(e);
@@ -18,24 +26,42 @@ public class XRayListener implements Listener {
 		this.lookup(e);
 	}
 	private void lookup(PlayerEvent e){
-		if (XRayLookup.xraylookup.getLookup().isEnabled()) {
-			OreLookup ores = XRayLookup.xraylookup.getLookup().lookup(e.getPlayer().getName(), XRayLookup.xraylookup.getConfiguration().getLookuptime(), XRayLookup.xraylookup.getSearchblocks());
-			if ((XRayLookup.xraylookup.getConfiguration().getRate_diamond() < ores.getDiamondRate() ||
-				XRayLookup.xraylookup.getConfiguration().getRate_emerald() < ores.getEmeraldRate() ||
-				XRayLookup.xraylookup.getConfiguration().getRate_gold() < ores.getGoldRate() ||
-				XRayLookup.xraylookup.getConfiguration().getRate_iron() < ores.getIronRate() ||
-				XRayLookup.xraylookup.getConfiguration().getRate_lapis() < ores.getLapisRate() ||
-				XRayLookup.xraylookup.getConfiguration().getRate_redstone() < ores.getRedstoneRate() ||
-				XRayLookup.xraylookup.getConfiguration().getRate_coal() < ores.getCoalRate())
-				&& ores.getStone() > XRayLookup.xraylookup.getConfiguration().getLookupcount()) {
-				
-				for(Player p : Bukkit.getOnlinePlayers()) {
-					if (p.hasPermission("xraylookup.recieve")) {
-							XRayLookup.xraylookup.sendData(p, ores);
+		if (plugin.getLookup().isEnabled()) {
+			// Lookup in einem Asynchronen Task
+			final String p = e.getPlayer().getName();
+			final Player[] onlineplayer = Bukkit.getOnlinePlayers();
+			if (plugin.getLookup() instanceof PrismExtension ) {
+				this.task(p, onlineplayer);
+			}
+			else {
+				plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+	
+					@Override 
+					public void run() {
+						task(p,onlineplayer);				
 					}
+					
+				});
+			}
+			
+		}
+	}
+	public void task(String p,Player[] onlineplayer) {
+		OreLookup ores = plugin.getLookup().lookup(p, plugin.getConfiguration().getLookuptime(), plugin.getSearchblocks());
+		if ((plugin.getConfiguration().getRate_diamond() < ores.getDiamondRate() ||
+			plugin.getConfiguration().getRate_emerald() < ores.getEmeraldRate() ||
+			plugin.getConfiguration().getRate_gold() < ores.getGoldRate() ||
+			plugin.getConfiguration().getRate_iron() < ores.getIronRate() ||
+			plugin.getConfiguration().getRate_lapis() < ores.getLapisRate() ||
+			plugin.getConfiguration().getRate_redstone() < ores.getRedstoneRate() ||
+			plugin.getConfiguration().getRate_coal() < ores.getCoalRate())
+			&& ores.getStone() > plugin.getConfiguration().getLookupcount()) {
+			
+			for(Player po : onlineplayer) {
+				if (po.hasPermission("xraylookup.recieve") && po.getName() != p) {
+						plugin.sendData(po, ores);
 				}
 			}
 		}
 	}
-
 }
