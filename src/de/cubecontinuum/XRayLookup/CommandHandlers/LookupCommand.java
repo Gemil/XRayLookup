@@ -1,5 +1,6 @@
 package de.cubecontinuum.XRayLookup.CommandHandlers;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,26 +19,31 @@ public class LookupCommand implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		String target = null;
-		if (args.length == 0 && sender instanceof Player) {
-			target = sender.getName();
+		final Player s = (Player)sender;
+		if (plugin.getLookup().isEnabled()) {	
+			String target = null;
+			if (args.length == 0 && sender instanceof Player) {
+				target = sender.getName();
+			}
+			else {
+				target = args[0];
+			}
+			final String p = target;
+			
+			plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+	
+				@Override
+				public void run() {
+					OreLookup ores = plugin.getLookup().lookup(p, plugin.getConfiguration().getLookuptime(), plugin.getSearchblocks());
+					plugin.sendData(s, ores);
+					
+				}
+				
+			});
 		}
 		else {
-			target = args[0];
+			s.sendMessage(ChatColor.RED+"Error! No Logging Plugin was loaded");
 		}
-		final String p = target;
-		final Player s = (Player)sender;
-		plugin.getServer().getScheduler().runTaskAsynchronously(XRayLookup.xraylookup, new Runnable(){
-
-			@Override
-			public void run() {
-				OreLookup ores = plugin.getLookup().lookup(p, plugin.getConfiguration().getLookuptime(), plugin.getSearchblocks());
-				plugin.sendData(s, ores);
-				
-			}
-			
-		});
 		return true;
-
 	}
 }

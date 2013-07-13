@@ -15,23 +15,28 @@ import net.coreprotect.CoreProtectAPI.ParseResult;
 
 public class CoreProtectExtension extends BasicExtension{
 	private CoreProtectAPI coreprotect;
-	public CoreProtectExtension() {
+	public CoreProtectExtension(XRayLookup plugin) {
+		this.plugin = plugin;
 		this.load();
 	}
 
 	@Override
-	public void load() {
-		Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("CoreProtect");
+	public void load() { 
+		Plugin cp = Bukkit.getServer().getPluginManager().getPlugin("CoreProtect");
 		// Check that CoreProtect is loaded
-		if (plugin instanceof CoreProtect && Double.parseDouble(plugin.getDescription().getVersion()) > 1.6) {
-			this.coreprotect = ((CoreProtect)plugin).getAPI();
-			
-			if (this.coreprotect.isEnabled() == false) {
-				XRayLookup.xraylookup.log("Coreprotect was found, but the CoreProtect API was disabled");
+		if (cp != null && cp instanceof CoreProtect) {
+			this.coreprotect = ((CoreProtect)cp).getAPI();
+			if (coreprotect.isEnabled()==true){
+				if (coreprotect.APIVersion() >= 2) {
+					plugin.log("Coreprotect was loaded");
+					this.loaded = true;
+				}
+				else {
+					plugin.log("Coreprotect Version must be 2.0.8 or higher!");
+				}
 			}
 			else {
-				XRayLookup.xraylookup.log("Coreprotect was loaded");
-				this.loaded = true;
+				plugin.log("Coreprotect was found, but the CoreProtect API was disabled");
 			}
 		}	
 	}
@@ -48,7 +53,7 @@ public class CoreProtectExtension extends BasicExtension{
 		List<String[]> blocks = this.coreprotect.performLookup(player, time, 0, null,  restrict, null);
 		for (String[] value : blocks){
 			ParseResult result = this.coreprotect.parseResult(value);
-			if (result.getActionId() == 0 && XRayLookup.xraylookup.getConfiguration().getWorlds().contains(result.worldName())) {
+			if (result.getActionId() == 0 && plugin.getConfiguration().getWorlds().contains(result.worldName())) {
 				ore.add(result.getTypeId());
 			}
 		}

@@ -22,7 +22,7 @@ import de.cubecontinuum.XRayLookup.ExtensionHandlers.PrismExtension;
 
 
 public class XRayLookup extends JavaPlugin {
-	public static XRayLookup xraylookup;
+
 	private Logger log = Logger.getLogger("Minecraft");
 	private BasicExtension lookup;
 	private XRayConfig config;
@@ -31,7 +31,7 @@ public class XRayLookup extends JavaPlugin {
 	
 	public XRayLookup() {
 		super();
-		XRayLookup.xraylookup = this;
+
 	}
 	public void onEnable(){ 
 		this.loadConfig();
@@ -65,27 +65,27 @@ public class XRayLookup extends JavaPlugin {
 		DecimalFormat f = new DecimalFormat("#0.000");
 		player.sendMessage(ChatColor.GOLD+"### Ore Rates from "+ChatColor.BLUE+ores.getPlayer()+ChatColor.GOLD+" ###");
 		player.sendMessage(ChatColor.DARK_GRAY+"Stone: "+ores.getStone()+" ### Netherrack: "+ores.getNetherrack());
-		player.sendMessage(ChatColor.DARK_AQUA+"Diamondrate: "+((ores.getDiamondRate() > this.config.getRate_diamond())?ChatColor.RED:ChatColor.GREEN)+f.format(ores.getDiamondRate())+"% ("+ores.getDiamond()+")");
-		player.sendMessage(ChatColor.DARK_AQUA+"Emeraldrate: "+((ores.getEmeraldRate() > this.config.getRate_emerald())?ChatColor.RED:ChatColor.GREEN)+f.format(ores.getEmeraldRate())+"% ("+ores.getEmerald()+")");
-		player.sendMessage(ChatColor.DARK_AQUA+"Goldrate: "+((ores.getGoldRate() > this.config.getRate_gold())?ChatColor.RED:ChatColor.GREEN)+f.format(ores.getGoldRate())+"% ("+ores.getGold()+")");
-		player.sendMessage(ChatColor.DARK_AQUA+"Ironrate: "+((ores.getIronRate() > this.config.getRate_iron())?ChatColor.RED:ChatColor.GREEN)+f.format(ores.getIronRate())+"% ("+ores.getIron()+")");
-		player.sendMessage(ChatColor.DARK_AQUA+"Redstonerate: "+((ores.getRedstoneRate() > this.config.getRate_redstone())?ChatColor.RED:ChatColor.GREEN)+f.format(ores.getRedstoneRate())+"% ("+ores.getRedstone()+")");
-		player.sendMessage(ChatColor.DARK_AQUA+"Lapisrate: "+((ores.getLapisRate() > this.config.getRate_lapis())?ChatColor.RED:ChatColor.GREEN)+f.format(ores.getLapisRate())+"% ("+ores.getLapis()+")");
-		player.sendMessage(ChatColor.DARK_AQUA+"Coalrate: "+((ores.getCoalRate() > this.config.getRate_coal())?ChatColor.RED:ChatColor.GREEN)+f.format(ores.getCoalRate())+"% ("+ores.getCoal()+")");
-		player.sendMessage(ChatColor.DARK_AQUA+"Quartzrate: "+((ores.getQuartzRate() > this.config.getRate_quartz())?ChatColor.RED:ChatColor.GREEN)+f.format(ores.getQuartzRate())+"% ("+ores.getQuartz()+")");
-
+		player.sendMessage(ChatColor.DARK_AQUA+"Probability of XRAY: "+(((ores.getDiamondRate()*10)+(ores.getGoldRate()*3)+(ores.getLapisRate()*10)+(ores.getIronRate()*1) > 100)?ChatColor.RED:ChatColor.GREEN)+ f.format((ores.getDiamondRate()*10)+(ores.getGoldRate()*3)+(ores.getLapisRate()*10)+(ores.getIronRate()*1))+"%");
+		player.sendMessage(ChatColor.DARK_AQUA+"Diamond: "+((ores.getDiamondRate() > this.config.getRate_diamond())?ChatColor.RED:ChatColor.GREEN)+f.format(ores.getDiamondRate())+"% ("+ores.getDiamond()+")");
+		player.sendMessage(ChatColor.DARK_AQUA+"Emerald: "+((ores.getEmeraldRate() > this.config.getRate_emerald())?ChatColor.RED:ChatColor.GREEN)+f.format(ores.getEmeraldRate())+"% ("+ores.getEmerald()+")");
+		player.sendMessage(ChatColor.DARK_AQUA+"Gold: "+((ores.getGoldRate() > this.config.getRate_gold())?ChatColor.RED:ChatColor.GREEN)+f.format(ores.getGoldRate())+"% ("+ores.getGold()+")");
+		player.sendMessage(ChatColor.DARK_AQUA+"Iron: "+((ores.getIronRate() > this.config.getRate_iron())?ChatColor.RED:ChatColor.GREEN)+f.format(ores.getIronRate())+"% ("+ores.getIron()+")");
+		player.sendMessage(ChatColor.DARK_AQUA+"Redstone: "+((ores.getRedstoneRate() > this.config.getRate_redstone())?ChatColor.RED:ChatColor.GREEN)+f.format(ores.getRedstoneRate())+"% ("+ores.getRedstone()+")");
+		player.sendMessage(ChatColor.DARK_AQUA+"Lapis: "+((ores.getLapisRate() > this.config.getRate_lapis())?ChatColor.RED:ChatColor.GREEN)+f.format(ores.getLapisRate())+"% ("+ores.getLapis()+")");
+		player.sendMessage(ChatColor.DARK_AQUA+"Coal: "+((ores.getCoalRate() > this.config.getRate_coal())?ChatColor.RED:ChatColor.GREEN)+f.format(ores.getCoalRate())+"% ("+ores.getCoal()+")");
+		player.sendMessage(ChatColor.DARK_AQUA+"Quartz: "+((ores.getQuartzRate() > this.config.getRate_quartz())?ChatColor.RED:ChatColor.GREEN)+f.format(ores.getQuartzRate())+"% ("+ores.getQuartz()+")");
 	}
 
 	private void loadConfig() {
-		this.config = new XRayConfig();
+		this.config = new XRayConfig(this);
 	}
 	private void loadDependencies() {
-		this.lookup = new CoreProtectExtension();
+		this.lookup = new CoreProtectExtension(this);
 		if (!this.lookup.isEnabled()) {
-			this.lookup = new LogBlockExtension();
+			this.lookup = new LogBlockExtension(this);
 		}
 		if (!this.lookup.isEnabled()) {
-			this.lookup = new PrismExtension();
+			this.lookup = new PrismExtension(this);
 		}
 	}
 	public void log(String message) {

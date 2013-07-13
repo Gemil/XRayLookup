@@ -51,9 +51,6 @@ public class OreLookup {
 		else if (mcid == 153) {
 			this.quartz = this.quartz + count;
 		}
-		else {
-			XRayLookup.xraylookup.log("Unknown id: "+mcid);
-		}
 	}
 	public int getNetherrack() {
 		return netherrack;

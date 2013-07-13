@@ -17,7 +17,9 @@ import de.diddiz.util.Block;
 public class LogBlockExtension extends BasicExtension{
 	private LogBlock logblock;
 
-	public LogBlockExtension () {
+
+	public LogBlockExtension (XRayLookup plugin) {
+		this.plugin = plugin;
 		this.load();
 	}
 	@Override
@@ -26,7 +28,7 @@ public class LogBlockExtension extends BasicExtension{
 		
 		if (logblock != null) {
 			this.loaded = true;
-			XRayLookup.xraylookup.log("LogBlock was loaded");
+			plugin.log("LogBlock was loaded");
 		}
 	}
 
@@ -46,7 +48,7 @@ public class LogBlockExtension extends BasicExtension{
 			i++;
 		}
 		OreLookup ore = new OreLookup(player);
-		for (String w : XRayLookup.xraylookup.getConfiguration().getWorlds()) {
+		for (String w : plugin.getConfiguration().getWorlds()) {
 			QueryParams params = new QueryParams(this.logblock);
 			params.bct = BlockChangeType.DESTROYED;
 			params.since = time / 60;
@@ -63,7 +65,7 @@ public class LogBlockExtension extends BasicExtension{
 			    }
 			} 
 			catch (SQLException ex) {
-			    XRayLookup.xraylookup.log("Unexpected Exception while fetching Data from LogBlock: "+ex.getMessage());
+				plugin.log("Unexpected Exception while fetching Data from LogBlock: "+ex.getMessage());
 			}
 		}
 		return ore;

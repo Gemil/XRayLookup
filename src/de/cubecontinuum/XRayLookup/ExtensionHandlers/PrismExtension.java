@@ -18,7 +18,8 @@ import de.cubecontinuum.XRayLookup.XRayLookup;
 public class PrismExtension extends BasicExtension {
 	private Prism prism;
 
-	public PrismExtension() {
+	public PrismExtension(XRayLookup plugin) {
+		this.plugin = plugin;
 		this.load();
 	}
 	@Override
@@ -27,7 +28,7 @@ public class PrismExtension extends BasicExtension {
 		
 		if (prism != null) {
 			this.loaded = true;
-			XRayLookup.xraylookup.log("Prism was loaded");
+			plugin.log("Prism was loaded");
 		}
 	}
 
@@ -40,11 +41,10 @@ public class PrismExtension extends BasicExtension {
 	@Override
 	public OreLookup lookup(String player, Integer time, List<Integer> restrict) {
 		OreLookup ore = new OreLookup(player);
-		for (String w : XRayLookup.xraylookup.getConfiguration().getWorlds()) {
+		for (String w : plugin.getConfiguration().getWorlds()) {
 			
 			QueryParameters parameters = new QueryParameters();
 			
-			parameters.addSharedPlayer(Bukkit.getPlayer(player)); 
 			parameters.addActionType("block-break",MatchRule.INCLUDE);
 			parameters.setWorld(w);
 			
@@ -62,19 +62,22 @@ public class PrismExtension extends BasicExtension {
 				parameters.addBlockFilter(value, (byte) 0);
 			}
 			
+			try {
+				ActionsQuery aq = new ActionsQuery(this.prism);
+				QueryResult lookupResult = aq.lookup( parameters );
+				if(!lookupResult.getActionResults().isEmpty()){
 
-			ActionsQuery aq = new ActionsQuery(this.prism);
-			QueryResult lookupResult = aq.lookup( parameters );
-
-			if(!lookupResult.getActionResults().isEmpty()){
-
-				List<Handler> results = lookupResult.getActionResults();
-				if (results != null) {
-					for (Handler a: results) {
-						ore.add(a.getBlockId(), a.getAggregateCount());
-					}
-				}				
+					List<Handler> results = lookupResult.getActionResults();
+					if (results != null) {
+						for (Handler a: results) {
+							ore.add(a.getBlockId(), a.getAggregateCount());
+						}
+					}				
+				}
 			}
+			catch(NullPointerException ex) {
+				plugin.log("Unexpected Exception while fetching Data from Prism: "+ex.getMessage());
+			}	
 		}
 		return ore;
 	}

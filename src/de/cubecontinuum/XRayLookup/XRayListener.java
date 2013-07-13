@@ -8,8 +8,6 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import de.cubecontinuum.XRayLookup.ExtensionHandlers.PrismExtension;
-
 public class XRayListener implements Listener {
 	
 	private XRayLookup plugin;
@@ -30,38 +28,32 @@ public class XRayListener implements Listener {
 			// Lookup in einem Asynchronen Task
 			final String p = e.getPlayer().getName();
 			final Player[] onlineplayer = Bukkit.getOnlinePlayers();
-			if (plugin.getLookup() instanceof PrismExtension ) {
-				this.task(p, onlineplayer);
-			}
-			else {
-				plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
-	
-					@Override 
-					public void run() {
-						task(p,onlineplayer);				
-					}
-					
-				});
-			}
-			
-		}
-	}
-	public void task(String p,Player[] onlineplayer) {
-		OreLookup ores = plugin.getLookup().lookup(p, plugin.getConfiguration().getLookuptime(), plugin.getSearchblocks());
-		if ((plugin.getConfiguration().getRate_diamond() < ores.getDiamondRate() ||
-			plugin.getConfiguration().getRate_emerald() < ores.getEmeraldRate() ||
-			plugin.getConfiguration().getRate_gold() < ores.getGoldRate() ||
-			plugin.getConfiguration().getRate_iron() < ores.getIronRate() ||
-			plugin.getConfiguration().getRate_lapis() < ores.getLapisRate() ||
-			plugin.getConfiguration().getRate_redstone() < ores.getRedstoneRate() ||
-			plugin.getConfiguration().getRate_coal() < ores.getCoalRate())
-			&& ores.getStone() > plugin.getConfiguration().getLookupcount()) {
-			
-			for(Player po : onlineplayer) {
-				if (po.hasPermission("xraylookup.recieve") && po.getName() != p) {
-						plugin.sendData(po, ores);
+
+			plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
+
+				@Override 
+				public void run() {
+					OreLookup ores = plugin.getLookup().lookup(p, plugin.getConfiguration().getLookuptime(), plugin.getSearchblocks());
+					if ((plugin.getConfiguration().getRate_diamond() < ores.getDiamondRate() ||
+						plugin.getConfiguration().getRate_emerald() < ores.getEmeraldRate() ||
+						plugin.getConfiguration().getRate_gold() < ores.getGoldRate() ||
+						plugin.getConfiguration().getRate_iron() < ores.getIronRate() ||
+						plugin.getConfiguration().getRate_lapis() < ores.getLapisRate() ||
+						plugin.getConfiguration().getRate_redstone() < ores.getRedstoneRate() ||
+						plugin.getConfiguration().getRate_coal() < ores.getCoalRate())
+						&& ores.getStone() > plugin.getConfiguration().getLookupcount()) {
+						
+						for(Player po : onlineplayer) {
+							if (po.hasPermission("xraylookup.recieve")) {
+									plugin.sendData(po, ores);
+							}
+						}
+					}			
 				}
-			}
+				
+			});
+
+			
 		}
 	}
 }

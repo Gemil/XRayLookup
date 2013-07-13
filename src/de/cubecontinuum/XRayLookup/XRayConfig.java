@@ -23,19 +23,21 @@ public class XRayConfig {
 	private List<String> worlds = new ArrayList<String>(Arrays.asList("world","world_nether")); // ();
 
 	private final YamlConfiguration config = new YamlConfiguration();
+	private XRayLookup plugin;
 	
-	public XRayConfig() {
-		File configDir = new File("plugins/"+XRayLookup.xraylookup.getName());
+	public XRayConfig(XRayLookup plugin) {
+		this.plugin = plugin;
+		File configDir = new File("plugins/"+plugin.getName());
 		if (!configDir.exists()) {
             configDir.mkdir();
         }
-		File configFile = new File("plugins/"+XRayLookup.xraylookup.getName()+"/config.yml");
+		File configFile = new File("plugins/"+plugin.getName()+"/config.yml");
 
         if (!configFile.exists()) {
             try {
                 configFile.createNewFile();
             } catch (Exception e) {
-                XRayLookup.xraylookup.log("Error occured on Config generation");
+                plugin.log("Error occured on Config generation");
             }
         }
         if (this.loadConfig()) {
@@ -100,20 +102,20 @@ public class XRayConfig {
             config.set("worlds", this.worlds);
         }
 		try {
-            config.save("plugins/"+XRayLookup.xraylookup.getName()+"/config.yml");
+            config.save("plugins/"+plugin.getName()+"/config.yml");
         } 
 		catch (IOException ex) {
-        	XRayLookup.xraylookup.log("Couldn't save config: " + ex.getMessage());
+        	plugin.log("Couldn't save config: " + ex.getMessage());
         }
 	}
 
 	private boolean loadConfig() {
 		try {
-            config.load("plugins/"+XRayLookup.xraylookup.getName()+"/config.yml");
+            config.load("plugins/"+plugin.getName()+"/config.yml");
             return true;
         } 
 		catch (Exception ex) {
-			XRayLookup.xraylookup.log("[QuickSignReloaded] Couldn't load config: " + ex.getMessage());
+			plugin.log("[QuickSignReloaded] Couldn't load config: " + ex.getMessage());
             return false;
         }
 	}

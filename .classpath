@@ -2,13 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="ressources/CoreProtect_2.0.8.jar"/>
+	<classpathentry kind="lib" path="ressources/bukkit-1.6.2-R0.1-20130710.060123-2.jar"/>
 	<classpathentry kind="lib" path="ressources/LogBlock.jar"/>
-	<classpathentry kind="lib" path="ressources/bukkit-1.5.2-R0.1-20130501.001411-2.jar"/>
-	<classpathentry kind="lib" path="ressources/CoreProtect_2.07b.jar"/>
-	<classpathentry kind="lib" path="ressources/Prism-v.1.6.1.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://refract.dhmc.us/prism/"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="ressources/Prism-v1.6.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
